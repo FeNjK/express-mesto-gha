@@ -1,0 +1,41 @@
+{
+  "name": "express-mesto-gha",
+  "version": "1.0.0",
+  "description": " # Проект Mesto фронтенд + бэкенд",
+  "main": "app.js",
+  "scripts": {
+    "lint": "npx eslint .",
+    "dev": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FeNjK/express-mesto-gha.git"
+  },
+  "author": "Andrey Korostelev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FeNjK/express-mesto-gha/issues"
+  },
+  "homepage": "https://github.com/FeNjK/express-mesto-gha#readme",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "core-js": "^3.25.0",
+    "cors": "^2.8.5",
+    "error-stack-parser": "^3.0.0",
+    "express": "^4.18.1",
+    "mongoose": "^6.5.4",
+    "source-map-resolve": "^0.6.0",
+    "terser": "^5.15.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-react": "^7.31.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "nodemon": "^2.0.19"
+  }
+}
