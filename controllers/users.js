@@ -84,6 +84,7 @@ const editUserData = async (req, res) => {
       res.status(NOT_FOUND).send({
         message: 'Пользователь с указанным _id не найден',
       });
+      return;
     }
     res.send(user);
   } catch (err) {
@@ -110,12 +111,14 @@ const editUserAvatar = async (req, res) => {
       // Передадим объект опций:
       {
         new: true, // передаём на вход обновлённую запись
+        runValidators: true, // вылидируем данные перд изменением
       },
     );
     if (!user) {
       res.status(NOT_FOUND).send({
         message: 'Пользователь с указанным _id не найден',
       });
+      return;
     }
     res.send(user);
   } catch (err) {
