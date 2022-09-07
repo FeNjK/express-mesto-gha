@@ -23,17 +23,17 @@ const getUserById = async (req, res) => {
     const user = await User.findById(req.params.userId);
     // проводим сравнение и если это не наш случай, то двигаемся дальше
     if (!user) {
-      res
-        .status(NOT_FOUND)
-        .send({ message: 'Пользователь с указанным _id не найден' });
+      res.status(NOT_FOUND).send({
+        message: 'Пользователь с указанным _id не найден',
+      });
       return;
     }
     res.status(OK).send(user);
   } catch (err) {
     console.log(err);
-    if (err.name === 'CastError') {
+    if (err.name === 'CastError' || err.name === 'ValidationError') {
       res.status(BAD_REQUEST).send({
-        message: 'Переданы некорректные данные при создании пользователя',
+        message: 'Поиск осуществляется по некоректным данным',
       });
     } else {
       res.status(INTERNAL_SERVER_ERROR).send({
@@ -43,95 +43,94 @@ const getUserById = async (req, res) => {
   }
 };
 
-const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  // записываем данные в базу
-  User.create({
-    name,
-    about,
-    avatar,
-  })
+const createUser = async (req, res) => {
+  try {
+    const { name, about, avatar } = req.body;
+    // записываем данные в базу
+    const user = await User.create({
+      name,
+      about,
+      avatar,
+    });
     // возвращаем записанные в базу данные пользователя
-    .then((user) => {
-      res.send(user);
-    })
+    res.send(user);
+  } catch (err) {
     // если данные не записались, вернём ошибку
-    .catch((err) => {
-      console.log(err);
-      if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({
-          message: 'Переданы некорректные данные при создании пользователя',
-        });
-      } else {
-        res.status(INTERNAL_SERVER_ERROR).send({
-          message: 'Произошла внутренныя ошибка сервера',
-        });
-      }
+    console.log(err);
+    if (err.name === 'ValidationError') {
+      res.status(BAD_REQUEST).send({
+        message: 'Переданы некорректные данные при создании пользователя',
+      });
+      return;
+    }
+    res.status(INTERNAL_SERVER_ERROR).send({
+      message: 'Произошла внутренныя ошибка сервера',
     });
+  }
 };
 
-const editUserData = (req, res) => {
-  const { name, about } = req.body;
-  User.findByIdAndUpdate(
-    req.body._id,
-    { name, about },
-    // Передадим объект опций:
-    { new: true, runValidators: true },
-  )
-    .then((user) => {
-      // проводим сравнение и если это не наш случай, то двигаемся дальше
-      if (!user) {
-        return res.status(NOT_FOUND).send({
-          message: 'Пользователь с указанным _id не найден',
-        });
-      }
-      return res.status(OK).send(user);
-    })
+const editUserData = async (req, res) => {
+  try {
+    const { name, about } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.body._id,
+      { name, about },
+      // Передадим объект опций:
+      { new: true, runValidators: true },
+    );
+    // проводим сравнение и если это не наш случай, то двигаемся дальше
+    if (!user) {
+      res.status(NOT_FOUND).send({
+        message: 'Пользователь с указанным _id не найден',
+      });
+      return;
+    }
+    res.status(OK).send(user);
+  } catch (err) {
     // если данные не записались, вернём ошибку
-    .catch((err) => {
-      console.log(err);
-      if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({
-          message: 'Переданы некорректные данные при обновлении профиля',
-        });
-      } else {
-        res.status(INTERNAL_SERVER_ERROR).send({
-          message: 'Произошла внутренныя ошибка сервера',
-        });
-      }
-    });
+    console.log(err);
+    if (err.name === 'CastError' || err.name === 'ValidationError') {
+      res.status(BAD_REQUEST).send({
+        message: 'Переданы некорректные данные при обновлении профиля',
+      });
+    } else {
+      res.status(INTERNAL_SERVER_ERROR).send({
+        message: 'Произошла внутренныя ошибка сервера',
+      });
+    }
+  }
 };
 
-const editUserAvatar = (req, res) => {
-  const { avatar } = req.body;
-  User.findByIdAndUpdate(
-    req.body._id,
-    { avatar },
-    // Передадим объект опций:
-    { new: true, runValidators: true },
-  )
-    .then((user) => {
-      // проводим сравнение и если это не наш случай, то двигаемся дальше
-      if (!user) {
-        return res.status(NOT_FOUND).send({
-          message: 'Пользователь с указанным _id не найден',
-        });
-      }
-      return res.status(OK).send(user);
-    })
+const editUserAvatar = async (req, res) => {
+  try {
+    const { avatar } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.body._id,
+      { avatar },
+      // Передадим объект опций:
+      { new: true, runValidators: true },
+    );
+    // проводим сравнение и если это не наш случай, то двигаемся дальше
+    if (!user) {
+      res.status(NOT_FOUND).send({
+        message: 'Пользователь с указанным _id не найден',
+      });
+      return;
+    }
+    res.status(OK).send(user);
+  } catch (err) {
     // если данные не записались, вернём ошибку
-    .catch((err) => {
-      console.log(err);
-      if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({
-          message: 'Переданы некорректные данные при обновлении аватара',
-        });
-      } else {
-        res.status(INTERNAL_SERVER_ERROR).send({
-          message: 'Произошла внутренныя ошибка сервера',
-        });
-      }
-    });
+    console.log(err);
+    if (err.name === 'CastError' || err.name === 'ValidationError') {
+      res.status(BAD_REQUEST).send({
+        message: 'Переданы некорректные данные при обновлении аватара',
+      });
+    } else {
+      res.status(INTERNAL_SERVER_ERROR).send({
+        message: 'Произошла внутренныя ошибка сервера',
+      });
+    }
+  }
 };
 
 module.exports = {
