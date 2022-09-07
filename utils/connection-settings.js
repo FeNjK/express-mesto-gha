@@ -2,7 +2,7 @@ const DB_URL = 'mongodb://localhost:27017/mestodb';
 
 const DB_OPTIONS = {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
+  useUnifiedTopology: false,
   serverSelectionTimeoutMS: 5000, // целесообразно ли ?!.
 };
 

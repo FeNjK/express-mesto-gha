@@ -15,7 +15,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '6317a1ec12fa03b5bc205764', // вставьте сюда _id созданного в предыдущем пункте пользователя
+    // вставьте сюда _id созданного в предыдущем пункте пользователя
+    _id: '6317a1ec12fa03b5bc205764',
   };
 
   next();
@@ -32,14 +33,14 @@ async function runServer() {
     // Подключаемся к серверу
     await mongoose.connect(DB_URL, DB_OPTIONS);
     console.log('Подключение c сервером успешно установлено');
-    // взаимодействие с базой данных
+
+    // прозваниваем порт
+    await app.listen(PORT, () => {
+      console.log(`Сервер запущен на ${PORT} порту`);
+    });
   } catch (err) {
-    console.log('Возникла ошибка');
+    console.log('Возникла ошибка в подключении к серверу');
     console.log(err);
   }
 }
 runServer();
-
-app.listen(PORT, () => {
-  console.log(`Сервер запущен на ${PORT} порту`);
-});
