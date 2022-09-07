@@ -6,30 +6,41 @@ const {
   INTERNAL_SERVER_ERROR,
 } = require('../utils/http-status-codes');
 
-const getUsers = (req, res) => {
-  User.find(req)
-    .then((users) => {
-      res.status(OK).send(users);
-    })
-    .catch((err) => {
-      console.log(err);
-      res
-        .status(NOT_FOUND)
-        .send({ message: 'В базе данных отсутствуют данные о пользователях' });
-    });
+const getUsers = async (req, res) => {
+  try {
+    const users = await User.find(req);
+    res.status(OK).send(users);
+  } catch (err) {
+    console.log(err);
+    res
+      .status(NOT_FOUND)
+      .send({ message: 'В базе данных отсутствуют данные о пользователях' });
+  }
 };
 
-const getUserById = (req, res) => {
-  User.findById(req.params.userId)
-    .then((user) => {
-      res.status(OK).send(user);
-    })
-    .catch((err) => {
-      console.log(err);
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    // проводим сравнение и если это не наш случай, то двигаемся дальше
+    if (!user) {
       res
         .status(NOT_FOUND)
-        .send({ message: 'Пользователь с таким id отсутствует в базе данных' });
-    });
+        .send({ message: 'Пользователь с указанным _id не найден' });
+      return;
+    }
+    res.status(OK).send(user);
+  } catch (err) {
+    console.log(err);
+    if (err.name === 'CastError') {
+      res.status(BAD_REQUEST).send({
+        message: 'Переданы некорректные данные при создании пользователя',
+      });
+    } else {
+      res.status(INTERNAL_SERVER_ERROR).send({
+        message: 'Произошла внутренныя ошибка сервера',
+      });
+    }
+  }
 };
 
 const createUser = (req, res) => {
@@ -74,9 +85,7 @@ const editUserData = (req, res) => {
           message: 'Пользователь с указанным _id не найден',
         });
       }
-      return res.status(OK).send({ data: user } && {
-        message: 'Обновление данных пользователя успешно завершено',
-      });
+      return res.status(OK).send(user);
     })
     // если данные не записались, вернём ошибку
     .catch((err) => {
@@ -108,9 +117,7 @@ const editUserAvatar = (req, res) => {
           message: 'Пользователь с указанным _id не найден',
         });
       }
-      return res.status(OK).send({ data: user } && {
-        message: 'Обновление аватара успешно завершено',
-      });
+      return res.status(OK).send(user);
     })
     // если данные не записались, вернём ошибку
     .catch((err) => {
