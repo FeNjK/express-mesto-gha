@@ -42,7 +42,7 @@ const createUser = (req, res) => {
   })
     // возвращаем записанные в базу данные пользователя
     .then((user) => {
-      res.send({ data: user });
+      res.send(user);
     })
     // если данные не записались, вернём ошибку
     .catch((err) => {
