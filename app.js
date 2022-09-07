@@ -34,15 +34,9 @@ async function runServer() {
     // взаимодействие с базой данных
   } catch (err) {
     console.log(err);
-  } finally {
-    // Закрываем подключение при завершении работы или при ошибке
-    await mongoose.close();
   }
 }
 runServer();
-
-/* mongoose.connect(DB_URL, DB_OPTIONS);
-// или через MongoClient ?! */
 
 app.listen(PORT, () => {
   console.log(`Сервер запущен на ${PORT} порту`);
