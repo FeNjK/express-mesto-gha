@@ -1,7 +1,6 @@
 const Card = require('../models/card');
 const {
   BAD_REQUEST,
-  UNAUTHORIZED,
   NOT_FOUND,
   INTERNAL_SERVER_ERROR,
 } = require('../utils/http-status-codes');
@@ -96,7 +95,7 @@ const setLikeCard = async (req, res) => {
     console.log(err);
     if (err.name === 'CastError') {
       res.status(BAD_REQUEST).send({
-        message: 'Переданы некорректный _id карточки при лайке',
+        message: 'Передан некорректный _id карточки при лайке',
       });
     } else {
       res.status(INTERNAL_SERVER_ERROR).send({
@@ -109,7 +108,6 @@ const setLikeCard = async (req, res) => {
 const deleteLikeCard = async (req, res) => {
   try {
     const card = await Card.findByIdAndUpdate(
-      req.params.cardId,
       req.params.cardId,
       { $pull: { likes: req.user._id } }, // убрать _id из массива
       { new: true },
@@ -124,9 +122,9 @@ const deleteLikeCard = async (req, res) => {
   } catch (err) {
     // если данные не записались, вернём ошибку
     console.log(err);
-    if (err.name === 'CastError') {
+    if (err.name === 'CastError' || err.name === 'ValidationError') {
       res.status(BAD_REQUEST).send({
-        message: 'Переданы некорректный _id карточки при дизлайке',
+        message: 'Передан некорректный _id карточки при дизлайке',
       });
     } else {
       res.status(INTERNAL_SERVER_ERROR).send({
