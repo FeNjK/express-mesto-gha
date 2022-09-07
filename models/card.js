@@ -1,32 +1,45 @@
 const mongoose = require('mongoose');
 
+const { Schema } = mongoose.Schema;
+
 // Опишем схему:
-const cardSchema = mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    minlength: 2,
-    maxlength: 30,
+const cardSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      minlength: 2,
+      maxlength: 30,
+    },
+    link: {
+      type: String,
+      required: true,
+    },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: 'user', // сделали ссылку на другую схему через строку
+      required: true,
+    },
+    likes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'user', // сделали ссылку на другую схему через строку
+        default: [],
+      },
+    ],
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  link: {
-    type: String,
-    required: true,
-  },
-  owner: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'user',
-    required: true,
-  },
-  likes: [{
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    default: [],
-  }],
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  { versionKey: false },
+);
+
+// Предполагаю, что если понадобится проверять
+// соответствие содержимого "link" на предмет URL, то
+// будет неоходимо устанавливать пакет npm install validator
+// и использовать методы проверки полей (только строки)
+// согласно статье https://github.com/validatorjs/validator.js
 
 // создаём модель и экспортируем её
 module.exports = mongoose.model('card', cardSchema);
