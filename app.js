@@ -27,8 +27,22 @@ app.use('*', (req, res) => {
   res.status(NOT_FOUND).send({ message: 'Ресурс не найден' });
 });
 
-mongoose.connect(DB_URL, DB_OPTIONS);
-// или через MongoClient ?!.
+async function runServer() {
+  try {
+    // Подключаемся к серверу
+    await mongoose.connect(DB_URL, DB_OPTIONS);
+    // взаимодействие с базой данных
+  } catch (err) {
+    console.log(err);
+  } finally {
+    // Закрываем подключение при завершении работы или при ошибке
+    await mongoose.close();
+  }
+}
+runServer();
+
+/* mongoose.connect(DB_URL, DB_OPTIONS);
+// или через MongoClient ?! */
 
 app.listen(PORT, () => {
   console.log(`Сервер запущен на ${PORT} порту`);
