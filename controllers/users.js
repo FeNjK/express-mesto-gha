@@ -77,7 +77,7 @@ const editUserData = async (req, res) => {
       // Передадим объект опций:
       {
         new: true, // передаём на вход обновлённую запись
-        /* runValidators: true, // вылидируем данные перд изменением */
+        runValidators: true, // вылидируем данные перд изменением
       },
     );
     if (!user) {
@@ -111,7 +111,6 @@ const editUserAvatar = async (req, res) => {
       // Передадим объект опций:
       {
         new: true, // передаём на вход обновлённую запись
-        /* runValidators: true, // вылидируем данные перд изменением */
       },
     );
     if (!user) {
