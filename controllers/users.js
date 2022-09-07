@@ -75,7 +75,10 @@ const editUserData = async (req, res) => {
       req.body._id,
       { name, about },
       // Передадим объект опций:
-      { new: true, runValidators: true },
+      {
+        new: true, // передаём на вход обновлённую запись
+        /* runValidators: true, // вылидируем данные перд изменением */
+      },
     );
     if (!user) {
       res.status(NOT_FOUND).send({
@@ -106,7 +109,10 @@ const editUserAvatar = async (req, res) => {
       req.body._id,
       { avatar },
       // Передадим объект опций:
-      { new: true, runValidators: true },
+      {
+        new: true, // передаём на вход обновлённую запись
+        /* runValidators: true, // вылидируем данные перд изменением */
+      },
     );
     if (!user) {
       res.status(NOT_FOUND).send({
