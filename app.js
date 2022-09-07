@@ -31,8 +31,10 @@ async function runServer() {
   try {
     // Подключаемся к серверу
     await mongoose.connect(DB_URL, DB_OPTIONS);
+    console.log('Подключение c сервером успешно установлено');
     // взаимодействие с базой данных
   } catch (err) {
+    console.log('Возникла ошибка');
     console.log(err);
   }
 }
