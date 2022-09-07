@@ -1,11 +1,9 @@
-const OK = 200; // всё замечательно
 const BAD_REQUEST = 400; // некорректный запрос данных
 const UNAUTHORIZED = 401; // попытка несанкционированного доступа
 const NOT_FOUND = 404; // искомые данные не найдены
 const INTERNAL_SERVER_ERROR = 500; // внутренныя ошибка сервера
 
 module.exports = {
-  OK,
   BAD_REQUEST,
   UNAUTHORIZED,
   NOT_FOUND,

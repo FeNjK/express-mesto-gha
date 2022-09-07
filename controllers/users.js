@@ -1,6 +1,5 @@
 const User = require('../models/user');
 const {
-  OK,
   BAD_REQUEST,
   NOT_FOUND,
   INTERNAL_SERVER_ERROR,
@@ -9,12 +8,12 @@ const {
 const getUsers = async (req, res) => {
   try {
     const users = await User.find(req);
-    res.status(OK).send(users);
+    res.send(users);
   } catch (err) {
     console.log(err);
-    res
-      .status(NOT_FOUND)
-      .send({ message: 'В базе данных отсутствуют данные о пользователях' });
+    res.status(NOT_FOUND).send({
+      message: 'В базе данных отсутствуют данные о пользователях',
+    });
   }
 };
 
@@ -28,7 +27,7 @@ const getUserById = async (req, res) => {
       });
       return;
     }
-    res.status(OK).send(user);
+    res.send(user);
   } catch (err) {
     console.log(err);
     if (err.name === 'CastError' || err.name === 'ValidationError') {
@@ -57,7 +56,7 @@ const createUser = async (req, res) => {
   } catch (err) {
     // если данные не записались, вернём ошибку
     console.log(err);
-    if (err.name === 'ValidationError') {
+    if (err.name === 'CastError' || err.name === 'ValidationError') {
       res.status(BAD_REQUEST).send({
         message: 'Переданы некорректные данные при создании пользователя',
       });
@@ -78,14 +77,13 @@ const editUserData = async (req, res) => {
       // Передадим объект опций:
       { new: true, runValidators: true },
     );
-    // проводим сравнение и если это не наш случай, то двигаемся дальше
     if (!user) {
       res.status(NOT_FOUND).send({
         message: 'Пользователь с указанным _id не найден',
       });
       return;
     }
-    res.status(OK).send(user);
+    res.send(user);
   } catch (err) {
     // если данные не записались, вернём ошибку
     console.log(err);
@@ -110,14 +108,13 @@ const editUserAvatar = async (req, res) => {
       // Передадим объект опций:
       { new: true, runValidators: true },
     );
-    // проводим сравнение и если это не наш случай, то двигаемся дальше
     if (!user) {
       res.status(NOT_FOUND).send({
         message: 'Пользователь с указанным _id не найден',
       });
       return;
     }
-    res.status(OK).send(user);
+    res.send(user);
   } catch (err) {
     // если данные не записались, вернём ошибку
     console.log(err);
