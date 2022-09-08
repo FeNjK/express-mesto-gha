@@ -3,16 +3,16 @@ const {
   BAD_REQUEST,
   NOT_FOUND,
   INTERNAL_SERVER_ERROR,
-} = require('../utils/http-status-codes');
+} = require('../utils/http-status-codes').default;
 
 const getCards = async (req, res) => {
   try {
     const cards = await Card.find(req);
     res.send(cards);
   } catch (err) {
-    console.log(err);
-    res.status(NOT_FOUND).send({
-      message: 'В базе данных отсутствуют данные о карточках',
+    /* console.log(err); */
+    res.status(INTERNAL_SERVER_ERROR).send({
+      message: 'Произошла внутренныя ошибка сервера',
     });
   }
 };
@@ -26,12 +26,8 @@ const createCard = async (req, res) => {
     // возвращаем записанные в базу данные карточки
     res.send(card);
   } catch (err) {
-    console.log(err);
-    if (
-      err.name === 'CastError'
-      || err.name === 'ValidationError'
-      || err.name === 'SyntaxError' // ?!.
-    ) {
+    /* console.log(err); */
+    if (err.name === 'CastError' || err.name === 'ValidationError') {
       res.status(BAD_REQUEST).send({
         message: 'Переданы некорректные данные при создании карточки',
       });
@@ -53,7 +49,7 @@ const deleteCard = async (req, res) => {
       });
       return;
     }
-    /* // я никаааак не могу понять как это сделаааать...
+    /* Переработаю позже в соответсвии с рекомендацией ревью
     if (card.owner.id !== req.user._id) {
       res.status(UNAUTHORIZED).send({
         message: 'Вы не можете удалять чужие карточки',
@@ -62,8 +58,7 @@ const deleteCard = async (req, res) => {
     } */
     res.send(card);
   } catch (err) {
-    // если данные не записались, вернём ошибку
-    console.log(err);
+    /* console.log(err); */
     if (err.name === 'CastError') {
       res.status(BAD_REQUEST).send({
         message: 'Переданы некорректный _id карточки при удалении',
@@ -91,8 +86,7 @@ const setLikeCard = async (req, res) => {
     }
     res.send(card);
   } catch (err) {
-    // если данные не записались, вернём ошибку
-    console.log(err);
+    /* console.log(err); */
     if (err.name === 'CastError') {
       res.status(BAD_REQUEST).send({
         message: 'Передан некорректный _id карточки при лайке',
@@ -120,9 +114,8 @@ const deleteLikeCard = async (req, res) => {
     }
     res.send(card);
   } catch (err) {
-    // если данные не записались, вернём ошибку
-    console.log(err);
-    if (err.name === 'CastError' || err.name === 'ValidationError') {
+    /* console.log(err); */
+    if (err.name === 'CastError') {
       res.status(BAD_REQUEST).send({
         message: 'Передан некорректный _id карточки при дизлайке',
       });
@@ -141,3 +134,11 @@ module.exports = {
   setLikeCard,
   deleteLikeCard,
 };
+
+// Переработать удаление карточки в соответствии с рекомендациями ревью
+//
+// В card.owner.id хранится объект, его нужно передать в строку,
+// тогда можно сравнить с  req.user._id - это во-первых.
+// А во-вторых Card.findByIdAndRemove если находит карточку,
+// то сразу удаляет. Поэтому нужно сначала найти карточку findById,
+// проверить owner, а потом удалить или вернуть, что доступ запрещен.

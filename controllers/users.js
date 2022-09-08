@@ -1,18 +1,14 @@
 const User = require('../models/user');
-const {
-  BAD_REQUEST,
-  NOT_FOUND,
-  INTERNAL_SERVER_ERROR,
-} = require('../utils/http-status-codes');
+const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require('../utils/http-status-codes').default;
 
 const getUsers = async (req, res) => {
   try {
     const users = await User.find(req);
     res.send(users);
   } catch (err) {
-    console.log(err);
-    res.status(NOT_FOUND).send({
-      message: 'В базе данных отсутствуют данные о пользователях',
+    /* console.log(err); */
+    res.status(INTERNAL_SERVER_ERROR).send({
+      message: 'Произошла внутренныя ошибка сервера',
     });
   }
 };
@@ -20,7 +16,6 @@ const getUsers = async (req, res) => {
 const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
-    // проводим сравнение и если это не наш случай, то двигаемся дальше
     if (!user) {
       res.status(NOT_FOUND).send({
         message: 'Пользователь с указанным _id не найден',
@@ -29,8 +24,8 @@ const getUserById = async (req, res) => {
     }
     res.send(user);
   } catch (err) {
-    console.log(err);
-    if (err.name === 'CastError' || err.name === 'ValidationError') {
+    /* console.log(err); */
+    if (err.name === 'CastError') {
       res.status(BAD_REQUEST).send({
         message: 'Поиск осуществляется по некоректным данным',
       });
@@ -55,8 +50,8 @@ const createUser = async (req, res) => {
     res.send(user);
   } catch (err) {
     // если данные не записались, вернём ошибку
-    console.log(err);
-    if (err.name === 'CastError' || err.name === 'ValidationError') {
+    /* console.log(err); */
+    if (err.name === 'ValidationError') {
       res.status(BAD_REQUEST).send({
         message: 'Переданы некорректные данные при создании пользователя',
       });
@@ -76,8 +71,8 @@ const editUserData = async (req, res) => {
       { name, about },
       // Передадим объект опций:
       {
-        new: true, // передаём на вход обновлённую запись
-        runValidators: true, // вылидируем данные перд изменением
+        new: true, // метод вернёт обновлённую запись
+        runValidators: true, // вылидируем данные перд сохранением данных
       },
     );
     if (!user) {
@@ -88,8 +83,7 @@ const editUserData = async (req, res) => {
     }
     res.send(user);
   } catch (err) {
-    // если данные не записались, вернём ошибку
-    console.log(err);
+    /* console.log(err); */
     if (err.name === 'CastError' || err.name === 'ValidationError') {
       res.status(BAD_REQUEST).send({
         message: 'Переданы некорректные данные при обновлении профиля',
