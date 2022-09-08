@@ -72,7 +72,7 @@ const editUserData = async (req, res) => {
   try {
     const { name, about } = req.body;
     const user = await User.findByIdAndUpdate(
-      req.body._id,
+      req.user._id,
       { name, about },
       // Передадим объект опций:
       {
@@ -106,7 +106,7 @@ const editUserAvatar = async (req, res) => {
   try {
     const { avatar } = req.body;
     const user = await User.findByIdAndUpdate(
-      req.body._id,
+      req.user._id,
       { avatar },
       // Передадим объект опций:
       {

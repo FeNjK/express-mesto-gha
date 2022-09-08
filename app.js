@@ -13,10 +13,11 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// временная мидлвара
 app.use((req, res, next) => {
   req.user = {
     // вставьте сюда _id созданного в предыдущем пункте пользователя
-    _id: '6317a1ec12fa03b5bc205764',
+    _id: '63192bb802b99996c6b4dc47',
   };
 
   next();
