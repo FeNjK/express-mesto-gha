@@ -1,5 +1,9 @@
 const User = require('../models/user');
-const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require('../utils/http-status-codes').default;
+const {
+  BAD_REQUEST,
+  NOT_FOUND,
+  INTERNAL_SERVER_ERROR,
+} = require('../utils/http-status-codes');
 
 const getUsers = async (req, res) => {
   try {

@@ -3,7 +3,7 @@ const {
   BAD_REQUEST,
   NOT_FOUND,
   INTERNAL_SERVER_ERROR,
-} = require('../utils/http-status-codes').default;
+} = require('../utils/http-status-codes');
 
 const getCards = async (req, res) => {
   try {

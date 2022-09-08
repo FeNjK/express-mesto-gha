@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const routerUser = require('./routes/users');
 const routerCard = require('./routes/cards');
 /* const { DB_URL, DB_OPTIONS } = require('./utils/connection-settings'); */
-const { NOT_FOUND } = require('./utils/http-status-codes').default;
+const { NOT_FOUND } = require('./utils/http-status-codes');
 
 const { PORT = 3000 } = process.env;
 

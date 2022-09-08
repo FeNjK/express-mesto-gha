@@ -1,7 +1,11 @@
 const routerUser = require('express').Router(); // создали роутер
 
 const {
-  getUsers, getUserById, createUser, editUserData, editUserAvatar,
+  getUsers,
+  getUserById,
+  createUser,
+  editUserData,
+  editUserAvatar,
 } = require('../controllers/users');
 
 routerUser.get('/users', getUsers); // возвращает всех пользователей
