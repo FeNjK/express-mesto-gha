@@ -1,6 +1,7 @@
 const Card = require('../models/card');
 const {
   BAD_REQUEST,
+  UNAUTHORIZED,
   NOT_FOUND,
   INTERNAL_SERVER_ERROR,
 } = require('../utils/http-status-codes');
@@ -41,21 +42,21 @@ const createCard = async (req, res) => {
 
 const deleteCard = async (req, res) => {
   try {
-    const card = await Card.findByIdAndRemove(req.params.cardId);
-
+    const card = await Card.findById(req.params.cardId);
+    const owner = req.user._id;
     if (!card) {
       res.status(NOT_FOUND).send({
         message: 'Карточка с указанным _id не найдена',
       });
       return;
     }
-    /* Переработаю позже в соответсвии с рекомендацией ревью
-    if (card.owner.id !== req.user._id) {
+    if (card.owner.toString() !== owner) {
       res.status(UNAUTHORIZED).send({
-        message: 'Вы не можете удалять чужие карточки',
+        message: 'Вы не можете удалять чужие карточки!',
       });
       return;
-    } */
+    }
+    await Card.findByIdAndRemove(req.params.cardId);
     res.send(card);
   } catch (err) {
     /* console.log(err); */
@@ -137,7 +138,7 @@ module.exports = {
 
 // Переработать удаление карточки в соответствии с рекомендациями ревью
 //
-// В card.owner.id хранится объект, его нужно передать в строку,
+// В card.owner._id хранится объект, его нужно передать в строку,
 // тогда можно сравнить с  req.user._id - это во-первых.
 // А во-вторых Card.findByIdAndRemove если находит карточку,
 // то сразу удаляет. Поэтому нужно сначала найти карточку findById,
