@@ -10,7 +10,7 @@ const auth = require('./middlewares/auth');
 const { errorHandler } = require('./middlewares/errorHandler');
 const { NOT_FOUND } = require('./errors/http-status-codes');
 
-const { PORT } = process.env;
+const { PORT = 3000 } = process.env;
 
 const app = express();
 
