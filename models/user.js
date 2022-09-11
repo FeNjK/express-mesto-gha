@@ -1,40 +1,77 @@
 const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
+const validator = require('validator');
 
 // Опишем схему:
 const userSchema = new Schema(
   {
     name: {
       type: String,
-      required: true,
       minlength: 2,
       maxlength: 30,
-      // default: 'Вася Пупкин',
+      default: 'Жак-Ив Кусто',
     },
     about: {
       type: String,
-      required: true,
       minlength: 2,
       maxlength: 30,
-      // default: 'Слесарь-механизатор',
+      default: 'Исследователь',
     },
     avatar: {
       type: String,
-      required: true,
-      // default: 'https://st2.depositphotos.com/2255567/10039/v/950/depositphotos_100393528-stock-illustration-cute-crab-cartoon.jpg',
+      default:
+        'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+      validator(v) {
+        // или просто validator: (v) => isURL(v),
+        /* return validator.isURL(v); */
+        return /https?:\/\/(www)?[-a-zA-Z0-9@:%_+.~#?&=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&=]*)?/gi.isURL(v);
+      },
+    },
+    email: {
+      type: String,
+      required: [true, 'Требуется ввести email'],
+      validate: {
+        validator(v) {
+          // или просто validator: (v) => isEmail(v),
+          return validator.isEmail(v);
+          /* return //.isEmail(v); */
+        },
+        message: 'Неправильный формат почты',
+        /* или message: props => '${props.value} - Неправильный формат почты' */
+      },
+      unique: true,
+      select: false, // эту настройку включать только после проверки хэширования
+      default: 'praktikum@yandex.ru',
+    },
+    password: {
+      type: String,
+      required: [true, 'Требуется ввести пароль'],
+      select: false,
+      validate: { // или просто validator: (v) => isStrongPassword(v),
+        validator(v) {
+          return validator.isStrongPassword(v);
+        },
+        message: 'Ваш пароль не удовлетворяет требования безопасности',
+      },
     },
   },
   { versionKey: false },
 );
 // параметр управления версией документа мозолил глаз, вот и убрал...
 
-// Предполагаю, что если понадобится добавить в схему
-// емайл и пароль для регистрации и авторизации
-// или проверять соответствие содержимого "avatar" на предмет URL
-// будет неоходимо устанавливать пакет npm install validator
-// и использовать методы проверки полей (только строки)
-// согласно статье https://github.com/validatorjs/validator.js
+// Чтобы при POST-запросе при логине сервер
+// нам не отправлял пароль вместе с остальными данными о пользователе
+userSchema.methods.toJSON = function delUserPassword() {
+  const user = this.toObject();
+  delete user.password;
+  return user;
+};
 
 // создаём модель и экспортируем её
 module.exports = mongoose.model('user', userSchema);
+
+// https://github.com/validatorjs/validator.js
+// https://github.com/matteodelabre/mongoose-beautiful-unique-validation
+// https://www.npmjs.com/package/mongoose-schema-validator
+// https://docs.microsoft.com/en-us/dotnet/standard/base-types/how-to-verify-that-strings-are-in-valid-email-format?redirectedfrom=MSDN

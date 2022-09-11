@@ -1,74 +1,84 @@
-/* const bcrypt = require('bcryptjs'); */
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const {
-  BAD_REQUEST,
-  NOT_FOUND,
-  INTERNAL_SERVER_ERROR,
-} = require('../utils/http-status-codes');
+  BadRequestError,
+  UnauthorizedError,
+  NotFoundError,
+  ConflictError,
+} = require('../errors/http-status-codes');
 
-const getUsers = async (req, res) => {
+const { NODE_ENV, JWT_SECRET } = process.env;
+
+const getUsers = async (req, res, next) => {
+  /* console.log(req.user); */
   try {
     const users = await User.find(req);
     res.send(users);
   } catch (err) {
     /* console.log(err); */
-    res.status(INTERNAL_SERVER_ERROR).send({
-      message: 'Произошла внутренныя ошибка сервера',
-    });
+    next(err);
   }
 };
 
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.userId);
     if (!user) {
-      res.status(NOT_FOUND).send({
-        message: 'Пользователь с указанным _id не найден',
-      });
-      return;
+      throw new NotFoundError(
+        'Пользователь с указанным _id не найден.',
+      );
     }
     res.send(user);
   } catch (err) {
     /* console.log(err); */
     if (err.name === 'CastError') {
-      res.status(BAD_REQUEST).send({
-        message: 'Поиск осуществляется по некоректным данным',
-      });
-    } else {
-      res.status(INTERNAL_SERVER_ERROR).send({
-        message: 'Произошла внутренныя ошибка сервера',
-      });
+      next(new BadRequestError(
+        'Поиск осуществляется по некоректным данным.',
+      ));
+      return;
     }
+    next(err);
   }
 };
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   try {
-    const { name, about, avatar } = req.body;
+    const {
+      name, about, avatar, email, password,
+    } = req.body;
+    // хэшируем пароль
+    const hashedPassword = await bcrypt.hash(password, 10);
     // записываем данные в базу
     const user = await User.create({
       name,
       about,
       avatar,
+      email,
+      password: hashedPassword, // пердаём уже хэшированный пароль
     });
     // возвращаем записанные в базу данные пользователя
     res.send(user);
-  } catch (err) {
     // если данные не записались, вернём ошибку
+  } catch (err) {
     /* console.log(err); */
     if (err.name === 'ValidationError') {
-      res.status(BAD_REQUEST).send({
-        message: 'Переданы некорректные данные при создании пользователя',
-      });
+      next(new BadRequestError(
+        'Переданы некорректные данные при создании пользователя.',
+      ));
       return;
     }
-    res.status(INTERNAL_SERVER_ERROR).send({
-      message: 'Произошла внутренныя ошибка сервера',
-    });
+    if (err.name === '11000') {
+      next(new ConflictError(
+        'Пользователь с таким email уже существует.',
+      ));
+      return;
+    }
+    next(err);
   }
 };
 
-const editUserData = async (req, res) => {
+const editUserData = async (req, res, next) => {
   try {
     const { name, about } = req.body;
     const user = await User.findByIdAndUpdate(
@@ -81,27 +91,26 @@ const editUserData = async (req, res) => {
       },
     );
     if (!user) {
-      res.status(NOT_FOUND).send({
-        message: 'Пользователь с указанным _id не найден',
-      });
-      return;
+      throw new NotFoundError(
+        'Пользователь с указанным _id не найден.',
+      );
     }
     res.send(user);
   } catch (err) {
     /* console.log(err); */
     if (err.name === 'CastError' || err.name === 'ValidationError') {
-      res.status(BAD_REQUEST).send({
-        message: 'Переданы некорректные данные при обновлении профиля',
-      });
-    } else {
-      res.status(INTERNAL_SERVER_ERROR).send({
-        message: 'Произошла внутренныя ошибка сервера',
-      });
+      next(
+        new BadRequestError(
+          'Переданы некорректные данные при обновлении профиля.',
+        ),
+      );
+      return;
     }
+    next(err);
   }
 };
 
-const editUserAvatar = async (req, res) => {
+const editUserAvatar = async (req, res, next) => {
   try {
     const { avatar } = req.body;
     const user = await User.findByIdAndUpdate(
@@ -114,24 +123,65 @@ const editUserAvatar = async (req, res) => {
       },
     );
     if (!user) {
-      res.status(NOT_FOUND).send({
-        message: 'Пользователь с указанным _id не найден',
-      });
-      return;
+      throw new NotFoundError(
+        'Пользователь с указанным _id не найден.',
+      );
     }
     res.send(user);
   } catch (err) {
-    // если данные не записались, вернём ошибку
-    console.log(err);
+    /* console.log(err); */
     if (err.name === 'CastError' || err.name === 'ValidationError') {
-      res.status(BAD_REQUEST).send({
-        message: 'Переданы некорректные данные при обновлении аватара',
-      });
-    } else {
-      res.status(INTERNAL_SERVER_ERROR).send({
-        message: 'Произошла внутренныя ошибка сервера',
-      });
+      next(
+        new BadRequestError(
+          'Переданы некорректные данные при обновлении профиля.',
+        ),
+      );
+      return;
     }
+    next(err);
+  }
+};
+
+const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    // Чтобы реализовать передачу хеша пароля при аутентификации
+    // после вызова метода модели нужно добавить вызов метода select,
+    // передав ему строку '+password'
+    const user = await User.findOne({ email }).select('+password');
+    if (!user) {
+      throw new NotFoundError(
+        'Пользователь не найден.',
+      );
+    }
+    if (!email || !password) {
+      throw new BadRequestError(
+        'Пожалуйста, заполните все поля ввода.',
+      );
+    }
+    const authorizedUser = await bcrypt.compare(password, user.password);
+    if (!authorizedUser) {
+      throw new UnauthorizedError(
+        'Произошла ошибка авторизации. Введите правильные логин и пароль.',
+      );
+    }
+    const token = jwt.sign(
+      { _id: user._id },
+      NODE_ENV === 'production'
+        ? JWT_SECRET // можно было оставить только это
+        : 'dev-secret',
+      { expiresIn: '7d' },
+    );
+    // сохраняем токен в куки
+    res.cookie('jwt', token, {
+      maxAge: 3600000, // продолжительность жизни куки в миллисекундах
+      httpOnly: true, // из JS до этих кук мы не дотянемся
+      sameSite: true, // данная кука может работать только с текущим доменом
+    });
+    res.send(user.toJSON());
+    /* res.send({ token }); */
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -141,4 +191,5 @@ module.exports = {
   createUser,
   editUserData,
   editUserAvatar,
+  login,
 };
