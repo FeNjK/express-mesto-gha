@@ -33,7 +33,7 @@ const userSchema = new Schema(
       required: [true, 'Требуется ввести email'],
       validate: {
         validator(v) {
-          // или просто validator: (v) => isEmail(v),
+          /* или просто validator: (v) => isEmail(v), */
           return validator.isEmail(v);
           /* return //.isEmail(v); */
         },
