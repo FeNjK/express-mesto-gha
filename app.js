@@ -47,7 +47,9 @@ app.post(
   }),
   createUser,
 );
+
 app.use(auth);
+
 app.use('/', routerUser);
 app.use('/', routerCard);
 app.use('*', () => {
