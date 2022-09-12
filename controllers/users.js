@@ -21,6 +21,27 @@ const getUsers = async (req, res, next) => {
   }
 };
 
+const getUserMe = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      throw new NotFoundError(
+        'Пользователь с указанным _id не найден.',
+      );
+    }
+    res.send(user);
+  } catch (err) {
+    console.log(err);
+    if (err.name === 'CastError') {
+      next(new BadRequestError(
+        'Поиск осуществляется по некоректным данным.',
+      ));
+      return;
+    }
+    next(err);
+  }
+};
+
 const getUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.userId);
@@ -187,6 +208,7 @@ const login = async (req, res, next) => {
 
 module.exports = {
   getUsers,
+  getUserMe,
   getUserById,
   createUser,
   editUserData,

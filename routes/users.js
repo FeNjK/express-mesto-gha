@@ -4,12 +4,28 @@ const { ObjectId } = require('mongoose').Types;
 
 const {
   getUsers,
+  getUserMe,
   getUserById,
   editUserData,
   editUserAvatar,
 } = require('../controllers/users');
 
 routerUser.get('/users', getUsers); // возвращает всех пользователей
+routerUser.get(
+  '/users/me',
+  celebrate({
+    body: Joi.object().keys({
+      userId: Joi.string().required()
+        .custom((value, helpers) => {
+          if (!ObjectId.isValid(value)) {
+            return helpers.err('Запрашиваемый id некорректен');
+          }
+          return value;
+        }),
+    }),
+  }),
+  getUserMe,
+); // возвращает информацию о текущем пользователе
 
 routerUser.get(
   '/users/:userId',
