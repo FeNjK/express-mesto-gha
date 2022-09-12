@@ -150,8 +150,8 @@ const login = async (req, res, next) => {
     // передав ему строку '+password'
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      throw new NotFoundError(
-        'Пользователь не найден.',
+      throw new UnauthorizedError(
+        'Произошла ошибка авторизации. Введите правильные логин и пароль.',
       );
     }
     if (!email || !password) {
@@ -160,7 +160,7 @@ const login = async (req, res, next) => {
       );
     }
     const authorizedUser = await bcrypt.compare(password, user.password);
-    console.log(authorizedUser);
+    /* console.log(authorizedUser); */
     if (!authorizedUser) {
       throw new UnauthorizedError(
         'Произошла ошибка авторизации. Введите правильные логин и пароль.',
