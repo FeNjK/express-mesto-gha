@@ -41,12 +41,11 @@ const userSchema = new Schema(
         /* или message: props => '${props.value} - Неправильный формат почты' */
       },
       unique: true,
-      select: false, // эту настройку включать только после проверки хэширования
     },
     password: {
       type: String,
       required: [true, 'Требуется ввести пароль'],
-      select: false,
+      select: false, // эту настройку включать только после проверки хэширования
       validate: { // или просто validator: (v) => isStrongPassword(v),
         validator(v) {
           return validator.isStrongPassword(v);

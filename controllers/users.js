@@ -13,7 +13,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const getUsers = async (req, res, next) => {
   /* console.log(req.user); */
   try {
-    const users = await User.find(req);
+    const users = await User.find({});
     res.send(users);
   } catch (err) {
     /* console.log(err); */
@@ -68,7 +68,7 @@ const createUser = async (req, res, next) => {
       ));
       return;
     }
-    if (err.name === '11000') {
+    if (err.name === 'MongoServerError') {
       next(new ConflictError(
         'Пользователь с таким email уже существует.',
       ));
@@ -160,6 +160,7 @@ const login = async (req, res, next) => {
       );
     }
     const authorizedUser = await bcrypt.compare(password, user.password);
+    console.log(authorizedUser);
     if (!authorizedUser) {
       throw new UnauthorizedError(
         'Произошла ошибка авторизации. Введите правильные логин и пароль.',
