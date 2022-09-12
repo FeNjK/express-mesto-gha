@@ -1,6 +1,8 @@
 const routerUser = require('express').Router(); // создали роутер
 const { celebrate, Joi } = require('celebrate');
-const { ObjectId } = require('mongoose').Types;
+// const { ObjectId } = require('mongoose').Types;
+
+const { joiIdValidation } = require('../utils/joiValidationFuction');
 
 const {
   getUsers,
@@ -15,13 +17,14 @@ routerUser.get(
   '/users/me',
   celebrate({
     body: Joi.object().keys({
-      userId: Joi.string().required()
+      /* userId: Joi.string().required()
         .custom((value, helpers) => {
           if (!ObjectId.isValid(value)) {
             return helpers.err('Запрашиваемый id некорректен');
           }
           return value;
-        }),
+        }), */
+      userId: Joi.string().required().custom(joiIdValidation),
     }),
   }),
   getUserMe,
@@ -31,13 +34,7 @@ routerUser.get(
   '/users/:userId',
   celebrate({
     body: Joi.object().keys({
-      userId: Joi.string().required()
-        .custom((value, helpers) => {
-          if (!ObjectId.isValid(value)) {
-            return helpers.err('Запрашиваемый id некорректен');
-          }
-          return value;
-        }),
+      userId: Joi.string().required().custom(joiIdValidation),
     }),
   }),
   getUserById,

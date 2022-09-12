@@ -31,7 +31,7 @@ const getUserMe = async (req, res, next) => {
     }
     res.send(user);
   } catch (err) {
-    console.log(err);
+    /* console.log(err); */
     if (err.name === 'CastError') {
       next(new BadRequestError(
         'Поиск осуществляется по некоректным данным.',
