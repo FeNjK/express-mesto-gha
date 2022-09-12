@@ -5,7 +5,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 
 const auth = (req, res, next) => {
   const token = req.cookies.jwt;
-  console.log(token);
+  /* console.log(token); */
   let payload; // Payload — это полезные данные, которые хранятся внутри JWT.
   try {
     if (!token) {

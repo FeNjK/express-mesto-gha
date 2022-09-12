@@ -97,7 +97,7 @@ const editUserData = async (req, res, next) => {
     }
     res.send(user);
   } catch (err) {
-    /* console.log(err); */
+    console.log(err);
     if (err.name === 'CastError' || err.name === 'ValidationError') {
       next(
         new BadRequestError(
@@ -179,7 +179,7 @@ const login = async (req, res, next) => {
       sameSite: true, // данная кука может работать только с текущим доменом
     });
     res.send(user.toJSON());
-    /* res.send({ token }); */
+    res.send({ token });
   } catch (err) {
     next(err);
   }
