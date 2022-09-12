@@ -31,6 +31,7 @@ app.post(
   }),
   login,
 );
+app.use(auth);
 app.post(
   '/signup',
   celebrate({
@@ -47,7 +48,7 @@ app.post(
   }),
   createUser,
 );
-app.use(auth);
+
 app.use('/', routerUser);
 app.use('/', routerCard);
 app.use('*', () => {

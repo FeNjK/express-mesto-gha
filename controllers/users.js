@@ -8,10 +8,12 @@ const {
   ConflictError,
 } = require('../errors/http-status-codes');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
+const JWT_SECRET = 'fb42b56fe6312a9911550a4f69cf239a2982d93e17859f48eb723b971122a086';
+
+/* const { NODE_ENV, JWT_SECRET } = process.env; */
 
 const getUsers = async (req, res, next) => {
-  /* console.log(req.user); */
+  console.log(req.user);
   try {
     const users = await User.find({});
     res.send(users);
@@ -61,7 +63,7 @@ const createUser = async (req, res, next) => {
     res.send(user);
     // если данные не записались, вернём ошибку
   } catch (err) {
-    /* console.log(err); */
+    console.log(err);
     if (err.name === 'ValidationError') {
       next(new BadRequestError(
         'Переданы некорректные данные при создании пользователя.',
@@ -168,7 +170,8 @@ const login = async (req, res, next) => {
     }
     const token = jwt.sign(
       { _id: user._id },
-      NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+      /* NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', */
+      JWT_SECRET,
       { expiresIn: '7d' },
     );
     // сохраняем токен в куки
