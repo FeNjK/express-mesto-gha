@@ -179,7 +179,7 @@ const login = async (req, res, next) => {
       sameSite: true, // данная кука может работать только с текущим доменом
     });
     res.send(user.toJSON());
-    res.send({ token });
+    /* res.send({ token }); */
   } catch (err) {
     next(err);
   }

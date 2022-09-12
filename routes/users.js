@@ -17,10 +17,10 @@ routerUser.get(
     body: Joi.object().keys({
       userId: Joi.string().required()
         .custom((value, helpers) => {
-          if (!ObjectId.isValid(value)) {
-            return helpers.err('Запрашиваемый id некорректен');
+          if (ObjectId.isValid(value)) {
+            return value;
           }
-          return value;
+          return helpers.err('Запрашиваемый id некорректен');
         }),
     }),
   }),

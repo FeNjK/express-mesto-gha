@@ -14,6 +14,10 @@ const cardSchema = new Schema(
     link: {
       type: String,
       required: true,
+      validator(v) {
+        // eslint-disable-next-line no-useless-escape
+        return /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-]*)*\/?$/mi.isURL(v);
+      },
     },
     owner: {
       type: Schema.Types.ObjectId,
