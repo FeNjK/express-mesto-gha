@@ -24,8 +24,34 @@ routerCard.post(
   }),
   createCard,
 ); // создаёт карточку
-routerCard.delete('/cards/:cardId', deleteCard); // удаляет карточку по идентификатору
-routerCard.put('/cards/:cardId/likes', setLikeCard); // поставить лайк карточке
-routerCard.delete('/cards/:cardId/likes', deleteLikeCard); // убрать лайк с карточки
+routerCard.delete(
+  '/cards/:cardId',
+  celebrate({
+    body: Joi.object().keys({
+      cardId: Joi.string().hex().length(24),
+    }),
+  }),
+  deleteCard,
+); // удаляет карточку по идентификатору
+
+routerCard.put(
+  '/cards/:cardId/likes',
+  celebrate({
+    body: Joi.object().keys({
+      cardId: Joi.string().hex().length(24),
+    }),
+  }),
+  setLikeCard,
+); // поставить лайк карточке
+
+routerCard.delete(
+  '/cards/:cardId/likes',
+  celebrate({
+    body: Joi.object().keys({
+      cardId: Joi.string().hex().length(24),
+    }),
+  }),
+  deleteLikeCard,
+); // убрать лайк с карточки
 
 module.exports = routerCard;
