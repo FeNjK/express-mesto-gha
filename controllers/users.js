@@ -8,7 +8,7 @@ const {
   ConflictError,
 } = require('../errors/http-status-codes');
 
-const { JWT_SECRET } = process.env;
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 const getUsers = async (req, res, next) => {
   /* console.log(req.user); */
@@ -167,7 +167,7 @@ const login = async (req, res, next) => {
     }
     const token = jwt.sign(
       { _id: user._id },
-      JWT_SECRET,
+      NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
       { expiresIn: '7d' },
     );
     // сохраняем токен в куки

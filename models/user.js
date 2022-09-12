@@ -42,7 +42,6 @@ const userSchema = new Schema(
       },
       unique: true,
       select: false, // эту настройку включать только после проверки хэширования
-      default: 'praktikum@yandex.ru',
     },
     password: {
       type: String,
