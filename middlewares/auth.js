@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { UnauthorizedError } = require('../errors/http-status-codes');
 
-const JWT_SECRET = 'fb42b56fe6312a9911550a4f69cf239a2982d93e17859f48eb723b971122a086';
+// const JWT_SECRET = 'fb42b56fe6312a9911550a4f69cf239a2982d93e17859f48eb723b971122a086';
 
 /* const { NODE_ENV, JWT_SECRET } = process.env; */
 
@@ -22,7 +22,8 @@ const auth = (req, res, next) => {
       /* NODE_ENV === 'production'
         ? JWT_SECRET
         : 'dev-secret', */
-      JWT_SECRET,
+      /* JWT_SECRET, */
+      'dev-secret',
     );
     // console.log(payload);
     // где iat - время создания,
