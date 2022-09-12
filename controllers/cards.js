@@ -1,7 +1,7 @@
 const Card = require('../models/card');
 const {
   BadRequestError,
-  UnauthorizedError,
+  ForbiddenError,
   NotFoundError,
 } = require('../errors/http-status-codes');
 
@@ -45,7 +45,7 @@ const deleteCard = async (req, res, next) => {
       );
     }
     if (card.owner.toString() !== owner) {
-      throw new UnauthorizedError(
+      throw new ForbiddenError(
         'Вы не можете удалять чужие карточки!',
       );
     }

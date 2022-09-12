@@ -25,7 +25,8 @@ const userSchema = new Schema(
       validator(v) {
         // или просто validator: (v) => isURL(v),
         /* return validator.isURL(v); */
-        return /https?:\/\/(www)?[-a-zA-Z0-9@:%_+.~#?&=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&=]*)?/gi.isURL(v);
+        // eslint-disable-next-line no-useless-escape
+        return /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-]*)*\/?$/gmi.isURL(v);
       },
     },
     email: {
