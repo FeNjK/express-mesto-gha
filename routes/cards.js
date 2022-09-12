@@ -29,6 +29,8 @@ routerCard.delete(
   celebrate({
     body: Joi.object().keys({
       cardId: Joi.string().hex().length(24),
+      // hex Убедитесь, что строка содержит только шестнадцатеричные символы,
+      // и lengthубедитесь, что это строка ровно из 24 символов
     }),
   }),
   deleteCard,
