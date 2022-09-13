@@ -38,7 +38,6 @@ app.post(
     body: Joi.object().keys({
       email: Joi.string().required().email(),
       password: Joi.string().required(),
-      /* .pattern(/^[a-zA-Z0-9]{8,30}$/), */
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
       avatar: Joi.string().regex(validURL),
@@ -65,7 +64,7 @@ async function runServer() {
       // согласно документации по адресу
       // https://mongoosejs.com/docs/migrating_to_6.html#no-more-deprecation-warning-options
       // всё что тут раньше было представлено устарело в 6 версии Mongoose. У меня 6-я.
-      serverSelectionTimeoutMS: 5000, // целесообразно ли ?!.
+      serverSelectionTimeoutMS: 5000,
     });
     console.log('Подключение к серверу успешно установлено');
 

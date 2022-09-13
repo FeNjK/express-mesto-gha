@@ -1,11 +1,7 @@
 const routerUser = require('express').Router(); // создали роутер
 const { celebrate, Joi } = require('celebrate');
-// const { ObjectId } = require('mongoose').Types;
-
 const { validURL } = require('../utils/regularExpressions');
-
 const { joiIdValidation } = require('../utils/joiValidationFuction');
-// Почему-то при обработке валидации таким способом ощибки только множатся...
 
 const {
   getUsers,
@@ -16,34 +12,12 @@ const {
 } = require('../controllers/users');
 
 routerUser.get('/users', getUsers); // возвращает всех пользователей
-routerUser.get(
-  '/users/me',
-  celebrate({
-    params: Joi.object().keys({
-      /* userId: Joi.string().required()
-        .custom((value, helpers) => {
-          if (!ObjectId.isValid(value)) {
-            return helpers.err('Запрашиваемый id некорректен');
-          }
-          return value;
-        }), */
-      userId: Joi.string().required().custom(joiIdValidation),
-    }),
-  }),
-  getUserMe,
-); // возвращает информацию о текущем пользователе
+routerUser.get('/users/me', getUserMe); // возвращает информацию о текущем пользователе
 
 routerUser.get(
   '/users/:userId',
   celebrate({
     params: Joi.object().keys({
-      /* userId: Joi.string().required()
-        .custom((value, helpers) => {
-          if (!ObjectId.isValid(value)) {
-            return helpers.err('Запрашиваемый id некорректен');
-          }
-          return value;
-        }), */
       userId: Joi.string().required().custom(joiIdValidation),
     }),
   }),

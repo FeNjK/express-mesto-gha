@@ -10,7 +10,6 @@ const joiIdValidation = (value) => {
 
   if (!isValid) {
     throw new BadRequestError('Переданный _id некорректен.');
-    // return new Error('Переданный _id некорректен.');
   }
   return value;
 };
