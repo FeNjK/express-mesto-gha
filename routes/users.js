@@ -1,6 +1,6 @@
 const routerUser = require('express').Router(); // создали роутер
 const { celebrate, Joi } = require('celebrate');
-const { ObjectId } = require('mongoose').Types;
+// const { ObjectId } = require('mongoose').Types;
 
 const { validURL } = require('../utils/regularExpressions');
 
