@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { BadRequestError } = require('../errors/http-status-codes');
+// const { BadRequestError } = require('../errors/http-status-codes');
 
 function joiIdValidation(value) {
   const isValid = mongoose.isObjectIdOrHexString(value);
@@ -9,7 +9,8 @@ function joiIdValidation(value) {
   // https://mongoosejs.com/docs/api/mongoose.html#mongoose_Mongoose-isValidObjectId
 
   if (!isValid) {
-    throw new BadRequestError('Переданный _id некорректен.');
+    // throw new BadRequestError('Переданный _id некорректен.');
+    throw new Error('Переданный _id некорректен.');
   }
   return value;
 }
