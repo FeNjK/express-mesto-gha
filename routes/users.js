@@ -2,6 +2,8 @@ const routerUser = require('express').Router(); // создали роутер
 const { celebrate, Joi } = require('celebrate');
 const { ObjectId } = require('mongoose').Types;
 
+const { validURL } = require('../utils/regularExpressions');
+
 // const { joiIdValidation } = require('../utils/joiValidationFuction');
 // Почему-то при обработке валидации таким способом ощибки только множатся...
 
@@ -63,9 +65,7 @@ routerUser.patch(
   '/users/me/avatar',
   celebrate({
     body: Joi.object().keys({
-      avatar: Joi.string().required()
-        // eslint-disable-next-line no-useless-escape
-        .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-]*)*\/?$/mi),
+      avatar: Joi.string().required().regex(validURL),
     }),
   }),
   editUserAvatar,

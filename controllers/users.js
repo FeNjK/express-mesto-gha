@@ -34,7 +34,7 @@ const getUserMe = async (req, res, next) => {
     /* console.log(err); */
     if (err.name === 'CastError') {
       next(new BadRequestError(
-        'Поиск осуществляется по некоректным данным.',
+        'Поиск осуществляется по некорректным данным.',
       ));
       return;
     }
@@ -55,7 +55,7 @@ const getUserById = async (req, res, next) => {
     /* console.log(err); */
     if (err.name === 'CastError') {
       next(new BadRequestError(
-        'Поиск осуществляется по некоректным данным.',
+        'Поиск осуществляется по некорректным данным.',
       ));
       return;
     }
@@ -82,7 +82,7 @@ const createUser = async (req, res, next) => {
     res.send(user);
     // если данные не записались, вернём ошибку
   } catch (err) {
-    console.log(err);
+    /* console.log(err); */
     if (err.name === 'ValidationError') {
       next(new BadRequestError(
         'Переданы некорректные данные при создании пользователя.',
@@ -118,7 +118,7 @@ const editUserData = async (req, res, next) => {
     }
     res.send(user);
   } catch (err) {
-    console.log(err);
+    /* console.log(err); */
     if (err.name === 'CastError' || err.name === 'ValidationError') {
       next(
         new BadRequestError(

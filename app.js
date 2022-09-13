@@ -11,6 +11,7 @@ const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { errorHandler } = require('./middlewares/errorHandler');
 const { NotFoundError } = require('./errors/http-status-codes');
+const { validURL } = require('./utils/regularExpressions');
 
 const { PORT = 3000 } = process.env;
 
@@ -26,7 +27,7 @@ app.post(
   celebrate({
     body: Joi.object().keys({
       email: Joi.string().required().email(),
-      password: Joi.string().required().min(8),
+      password: Joi.string().required(),
     }),
   }),
   login,
@@ -36,14 +37,11 @@ app.post(
   celebrate({
     body: Joi.object().keys({
       email: Joi.string().required().email(),
-      password: Joi.string().required().min(8)
-        .pattern(/^[a-zA-Z0-9]{8,30}$/),
+      password: Joi.string().required(),
+      /* .pattern(/^[a-zA-Z0-9]{8,30}$/), */
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
-      avatar: Joi.string().regex(
-        // eslint-disable-next-line no-useless-escape
-        /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-]*)*\/?$/mi,
-      ),
+      avatar: Joi.string().regex(validURL),
     }),
   }),
   createUser,

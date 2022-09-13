@@ -1,5 +1,6 @@
 const routerCard = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
+const { validURL } = require('../utils/regularExpressions');
 
 // const { joiIdValidation } = require('../utils/joiValidationFuction');
 // Почему-то при обработке валидации таким способом ощибки только множатся...
@@ -19,10 +20,7 @@ routerCard.post(
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().required().min(2).max(30),
-      link: Joi.string().required().regex(
-      // eslint-disable-next-line no-useless-escape
-        /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-]*)*\/?$/mi,
-      ),
+      link: Joi.string().required().regex(validURL),
     }),
   }),
   createCard,
