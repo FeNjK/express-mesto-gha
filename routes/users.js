@@ -4,7 +4,7 @@ const { ObjectId } = require('mongoose').Types;
 
 const { validURL } = require('../utils/regularExpressions');
 
-// const { joiIdValidation } = require('../utils/joiValidationFuction');
+const { joiIdValidation } = require('../utils/joiValidationFuction');
 // Почему-то при обработке валидации таким способом ощибки только множатся...
 
 const {
@@ -20,14 +20,14 @@ routerUser.get(
   '/users/me',
   celebrate({
     body: Joi.object().keys({
-      userId: Joi.string().required()
+      /* userId: Joi.string().required()
         .custom((value, helpers) => {
           if (!ObjectId.isValid(value)) {
             return helpers.err('Запрашиваемый id некорректен');
           }
           return value;
-        }),
-      // userId: Joi.string().required().custom(joiIdValidation),
+        }), */
+      userId: Joi.string().required().custom(joiIdValidation),
     }),
   }),
   getUserMe,
@@ -37,14 +37,14 @@ routerUser.get(
   '/users/:userId',
   celebrate({
     body: Joi.object().keys({
-      userId: Joi.string().required()
+      /* userId: Joi.string().required()
         .custom((value, helpers) => {
           if (!ObjectId.isValid(value)) {
             return helpers.err('Запрашиваемый id некорректен');
           }
           return value;
-        }),
-      // userId: Joi.string().required().custom(joiIdValidation),
+        }), */
+      userId: Joi.string().required().custom(joiIdValidation),
     }),
   }),
   getUserById,

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 // const { BadRequestError } = require('../errors/http-status-codes');
 
-function joiIdValidation(value) {
+const joiIdValidation = (value) => {
   const isValid = mongoose.isObjectIdOrHexString(value);
   // isObjectIdOrHexString() возвращает true только для ObjectId экземпляров
   // или 24-символьных шестнадцатеричных строк и возвращает false для чисел,
@@ -10,9 +10,9 @@ function joiIdValidation(value) {
 
   if (!isValid) {
     // throw new BadRequestError('Переданный _id некорректен.');
-    throw new Error('Переданный _id некорректен.');
+    return new Error('Переданный _id некорректен.');
   }
   return value;
-}
+};
 
 module.exports = { joiIdValidation };
