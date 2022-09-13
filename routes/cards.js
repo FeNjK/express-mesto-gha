@@ -29,7 +29,7 @@ routerCard.post(
 routerCard.delete(
   '/cards/:cardId',
   celebrate({
-    body: Joi.object().keys({
+    params: Joi.object().keys({
       // cardId: Joi.string().hex().length(24),
       // hex Убедитесь, что строка содержит только шестнадцатеричные символы,
       // и lengthубедитесь, что это строка ровно из 24 символов
@@ -42,7 +42,7 @@ routerCard.delete(
 routerCard.put(
   '/cards/:cardId/likes',
   celebrate({
-    body: Joi.object().keys({
+    params: Joi.object().keys({
       // cardId: Joi.string().hex().length(24),
       cardId: Joi.string().required().custom(joiIdValidation),
     }),
@@ -53,7 +53,7 @@ routerCard.put(
 routerCard.delete(
   '/cards/:cardId/likes',
   celebrate({
-    body: Joi.object().keys({
+    params: Joi.object().keys({
       // cardId: Joi.string().hex().length(24),
       cardId: Joi.string().required().custom(joiIdValidation),
     }),

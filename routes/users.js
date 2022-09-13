@@ -19,7 +19,7 @@ routerUser.get('/users', getUsers); // возвращает всех польз�
 routerUser.get(
   '/users/me',
   celebrate({
-    body: Joi.object().keys({
+    params: Joi.object().keys({
       /* userId: Joi.string().required()
         .custom((value, helpers) => {
           if (!ObjectId.isValid(value)) {
@@ -36,7 +36,7 @@ routerUser.get(
 routerUser.get(
   '/users/:userId',
   celebrate({
-    body: Joi.object().keys({
+    params: Joi.object().keys({
       /* userId: Joi.string().required()
         .custom((value, helpers) => {
           if (!ObjectId.isValid(value)) {
