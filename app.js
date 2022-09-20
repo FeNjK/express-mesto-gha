@@ -10,6 +10,7 @@ const routerCard = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { errorHandler } = require('./middlewares/errorHandler');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { NotFoundError } = require('./errors/http-status-codes');
 const { validURL } = require('./utils/regularExpressions');
 
@@ -20,7 +21,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-
+app.use(requestLogger); // подключаем логгер запросов
 app.use(helmet());
 app.post(
   '/signin',
@@ -45,15 +46,13 @@ app.post(
   }),
   createUser,
 );
-
 app.use(auth);
-
 app.use('/', routerUser);
 app.use('/', routerCard);
 app.use('*', () => {
   throw new NotFoundError('Ресурс не найден.');
 });
-
+app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors()); // обработчик ошибок celebrate
 app.use(errorHandler); // наш централизованный обработчик
 
