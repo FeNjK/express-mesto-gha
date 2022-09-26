@@ -23,6 +23,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(requestLogger); // подключаем логгер запросов
 app.use(helmet());
+// удалить краш-тест после успешного прохождения ревью
+app.get('/crash-test', () => { // краш-тест сервера
+  // принудительное падение сервера для проверки его перезапуска pm2
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 app.post(
   '/signin',
   celebrate({

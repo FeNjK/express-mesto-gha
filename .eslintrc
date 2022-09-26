@@ -10,7 +10,9 @@
   },
   "rules": {
     "no-underscore-dangle": ["error", { "allow": ["id_", "_id"] }],
-    "linebreak-style": ["error", "windows"],
+    /* "linebreak-style": ["error", "windows"], */
+    "linebreak-style": ["error", "unix"],
+    /* "linebreak-style": 0, */ // или вообще игнорировать перенос строки
     "no-console": "off"
   }
 }
